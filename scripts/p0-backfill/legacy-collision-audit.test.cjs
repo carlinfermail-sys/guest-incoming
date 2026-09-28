@@ -1,0 +1,13 @@
+"use strict";
+const {test}=require("node:test"),assert=require("node:assert/strict");
+const {compare}=require("./legacy-collision-audit.cjs");
+const b={arrival:"2026-08-01",departure:"2026-08-05",apiReference:"REF1",firstName:"Test",lastName:"Guest",numAdult:2,numChild:0};
+const m={plannedMapping:{Property:"https://app.notion.com/p1",Unit:"https://app.notion.com/u1",Channel:"Airbnb"}};
+const l={url:"https://app.notion.com/l1",Property:'["https://app.notion.com/p1"]',Unit:'["https://app.notion.com/u1"]',"date:Check-in:start":b.arrival,"date:Check-out:start":b.departure,"Guest / Stay":"Booking - Test Guest",Channel:"Airbnb"};
+test("full structural identity with exact secondary name is exact",()=>assert.equal(compare(b,m,l).classification,"EXACT_LEGACY_MATCH"));
+test("missing all fields is ambiguous, never safe",()=>assert.equal(compare(b,m,{url:l.url}).classification,"AMBIGUOUS_LEGACY_MATCH"));
+test("name alone never establishes exact match",()=>assert.equal(compare(b,m,{url:l.url,"Guest / Stay":"Test Guest"}).classification,"AMBIGUOUS_LEGACY_MATCH"));
+test("different dates exclude only without stronger identity signal",()=>assert.equal(compare(b,m,{...l,"Guest / Stay":"Different Person","date:Check-in:start":"2026-07-01"}).classification,"NO_COLLISION"));
+test("same name and unit with changed dates is withheld",()=>assert.equal(compare(b,m,{...l,"date:Check-in:start":"2026-07-01"}).classification,"AMBIGUOUS_LEGACY_MATCH"));
+test("conflicting date properties cannot establish exact identity",()=>assert.equal(compare(b,m,{...l,"date:Dates:start":"2026-07-01"}).classification,"AMBIGUOUS_LEGACY_MATCH"));
+test("reference cannot override a conflicting property for exact match",()=>assert.equal(compare(b,m,{...l,Property:'["https://app.notion.com/p2"]',"Beds24 API Reference":"REF1"}).classification,"AMBIGUOUS_LEGACY_MATCH"));

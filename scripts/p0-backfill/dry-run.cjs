@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 /*
  * Guest Incoming P0 Backfill Runner
@@ -74,6 +74,8 @@ function reconcile() {
   };
 }
 
+module.exports = { classify, reconcile };
+if (require.main === module) {
 /* Synthetic safety contract: zero external calls. */
 const cases = [
   {
@@ -142,4 +144,6 @@ if (!summary.RECONCILED || !summary.DUPLICATES_VALID) {
   process.exitCode = 1;
 } else {
   console.log("P0 DRY-RUN CONTRACT PASS — ZERO EXTERNAL WRITES");
+}
+
 }
