@@ -1,0 +1,7 @@
+[
+ {"id":"td3-clean","kind":"passport-mrz","rotation":0,"contrast":"normal","lines":["P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<","L898902C36UTO7408122F1204159ZE184226B<<<<<10"],"expectedValid":true},
+ {"id":"td3-corrupt","kind":"passport-mrz","rotation":0,"contrast":"normal","lines":["P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<","L898902C36UTO7408132F1204159ZE184226B<<<<<10"],"expectedValid":false},
+ {"id":"eu-id-fields","kind":"id-card-fields","rotation":0,"contrast":"normal","fields":{"surname":"ROSSI","given":"MARIO","birth":"1990-04-12","nationality":"ITA","document":"CA00000AA","expiry":"2030-04-11"}},
+ {"id":"eu-id-rotated","kind":"id-card-fields","rotation":7,"contrast":"normal","fields":{"surname":"BIANCHI","given":"ANNA","birth":"1985-11-23","nationality":"ITA","document":"CA11111BB","expiry":"2029-11-22"}},
+ {"id":"eu-id-low-contrast","kind":"id-card-fields","rotation":0,"contrast":"low","fields":{"surname":"VERDI","given":"LUCA","birth":"1978-02-05","nationality":"ITA","document":"CA22222CC","expiry":"2028-02-04"}}
+]
