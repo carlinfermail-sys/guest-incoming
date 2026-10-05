@@ -1,0 +1,4 @@
+"use strict";const {test}=require("node:test");const assert=require("node:assert/strict");const {evaluateAutomationGate}=require("./automation-gate.cjs");
+test("schedule stays blocked before controlled validation",()=>{const r=evaluateAutomationGate({freshRead:true,mf3ReadBack:true});assert.equal(r.pass,false);assert.equal(r.schedule,null)});
+test("unexpected create blocks periodic automation",()=>{const r=evaluateAutomationGate({freshRead:true,mf3ReadBack:true,controlledRun:true,reconciliation:true,unexpectedCreates:1});assert.equal(r.pass,false);assert(r.failed.includes("unexpectedCreates"))});
+test("clean controlled run opens six-hour gate",()=>{const r=evaluateAutomationGate({freshRead:true,mf3ReadBack:true,controlledRun:true,reconciliation:true,unexpectedCreates:0,duplicates:0,blockingExceptions:0});assert.equal(r.pass,true);assert.equal(r.schedule.interval,6);assert.equal(r.schedule.timezone,"Europe/Rome")});
