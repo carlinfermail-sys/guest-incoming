@@ -1,0 +1,3 @@
+"use strict";const {test}=require("node:test");const assert=require("node:assert/strict");const {createManifest,addException,summarize}=require("./exception-manifest.cjs");
+test("manifest accounts explicit reasons",()=>{const m=createManifest();addException(m,{bookingId:123,reason:"DUPLICATE_BOOKING_ID",detail:"2 matches"});addException(m,{bookingId:null,reason:"MISSING_BOOKING_ID"});const s=summarize(m);assert.equal(s.EXCEPTIONS,2);assert.equal(s.DUPLICATES,1);assert.equal(s.byReason.MISSING_BOOKING_ID,1)});
+test("unknown reasons cannot enter manifest",()=>{const m=createManifest();assert.throws(()=>addException(m,{reason:"SILENT_DROP"}),/Unknown exception reason/);assert.equal(m.length,0)});
