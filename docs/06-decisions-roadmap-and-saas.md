@@ -5,6 +5,7 @@
 - Notion è il database operativo dell'MVP.
 - Make è il layer di integrazione/orchestrazione.
 - Il flusso corrente è `Beds24 → Make → Notion`.
+- Per la sincronizzazione periodica Beds24 → Make → Notion, la cadenza iniziale approvata è ogni 6 ore. La cadenza oraria è una possibile ottimizzazione successiva, dopo run controllati e riconciliazione stabile senza CREATE inattesi, duplicati o eccezioni bloccanti. Stime del solo trigger su 30 giorni: circa 120 controlli a 6 ore e 720 ogni ora; i moduli e i bundle elaborati possono aumentare il consumo effettivo.
 - `Bookings/Stays` è il database centrale unico per prenotazioni e soggiorni.
 - Non creare database separati per singolo canale; `Channel` identifica la provenienza.
 - Bookings e Stays restano nello stesso database durante l'MVP.
