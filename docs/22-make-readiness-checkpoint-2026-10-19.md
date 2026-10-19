@@ -58,3 +58,15 @@ Required behavior:
 ## Current result
 
 The cancellation and false-create guards are verified. Production activation has not been performed because the changed-date gate is still open.
+
+
+## Verifica cambio data checkout — PASS
+
+- Ambito: solo scenario candidato Make `7828962`, sorgenti sintetiche TEST; candidato ancora `Inactive / On demand`.
+- Produzione `7787277`: non modificata.
+- Implementato: ricerca Housekeeping per Booking ID e route per `Confirmed` con un solo evento esistente e data checkout diversa.
+- Azioni della route: aggiornamento della stessa pagina Housekeeping (`Data pulizia`, `Evento check-out`, `Stato pulizia = Da preparare`) e della Unit collegata (`Stato preparazione = Da preparare`, `Ultimo check-out gestito = Booking ID|data`).
+- Test sintetico: `TEST-BOOKING-003` spostato da `2026-10-08` a `2026-10-09`.
+- Verifica Notion: una sola riga Housekeeping, stessa pagina, evento `TEST-BOOKING-003|2026-10-09`, data pulizia `2026-10-09`, stato `Da preparare`; Unit `TEST-ROOM-001` aggiornata con lo stesso checkout.
+- Idempotenza: dopo aver impostato Housekeeping e Unit su `Pronta`, un secondo run senza variazioni ha conservato `Pronta`, non ha creato duplicati e non ha riscritto il checkout.
+- Gate: non attivare o promuovere il candidato finché non sono riconciliati i casi creazione/cancellazione/duplicati, verificati i consumi e definito il rollback.
