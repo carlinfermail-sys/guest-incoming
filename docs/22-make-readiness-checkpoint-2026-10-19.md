@@ -70,3 +70,17 @@ The cancellation and false-create guards are verified. Production activation has
 - Verifica Notion: una sola riga Housekeeping, stessa pagina, evento `TEST-BOOKING-003|2026-10-09`, data pulizia `2026-10-09`, stato `Da preparare`; Unit `TEST-ROOM-001` aggiornata con lo stesso checkout.
 - Idempotenza: dopo aver impostato Housekeeping e Unit su `Pronta`, un secondo run senza variazioni ha conservato `Pronta`, non ha creato duplicati e non ha riscritto il checkout.
 - Gate: non attivare o promuovere il candidato finché non sono riconciliati i casi creazione/cancellazione/duplicati, verificati i consumi e definito il rollback.
+
+
+## Final TEST reconciliation — PASS
+
+- Scope remained limited to inactive/on-demand candidate `7828962` and synthetic TEST data. Production scenario `7787277` was not modified or executed.
+- Creation: PASS. `TEST-BOOKING-004` created exactly one Housekeeping item for `2026-10-20` with `Stato pulizia = Da preparare`; the Unit was updated to `TEST-BOOKING-004|2026-10-20` and `Da preparare`.
+- Cancellation reconciliation in the same run: existing cancelled items remained `Annullata`; the cancelled fixture without an event did not create one.
+- Duplicate blocker: PASS. Two Housekeeping items were deliberately prepared for booking `TEST-BOOKING-004`, both at `2026-10-20` and `Pronta`. The source checkout was changed to `2026-10-21`, while the Unit was set to `Pronta`.
+- After the duplicate-guard run, both Housekeeping items remained unchanged at `2026-10-20` and `Pronta`; the Unit remained `Pronta` with last handled checkout `TEST-BOOKING-004|2026-10-20`. No ambiguous update crossed the `>1` guard.
+- Consumption control: two manual runs for the final reconciliation; no scheduling or activation.
+
+Verified TEST cases now cover creation, cancellation, cancellation-without-event, changed checkout, identical-rerun idempotency, and duplicate blocking.
+
+Production promotion remains a separate approval gate. Before it: review the final blueprint and expected credit use, define rollback, map the approved production sources, and execute one controlled production booking only with explicit authorization.
